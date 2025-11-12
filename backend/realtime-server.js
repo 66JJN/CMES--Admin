@@ -3,6 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import fs from "fs";
+import e from "express";
 
 const settingsPath = "./settings.json";
 
@@ -13,12 +14,13 @@ app.use(express.json());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" }
-});w
+});
 
 let config = {
   systemOn: true,
   enableImage: true,
   enableText: true,
+  enableBirthday: true,
   price: 100,
   time: 10,
   settings: [] // เก็บแพ็คเกจ

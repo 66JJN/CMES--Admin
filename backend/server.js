@@ -153,7 +153,7 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
       price: Number(price) || 0,
       sender: sender || "Unknown",
       textColor: textColor || "white",
-      socialType: socialType || null,
+      socialType: socialenable || null,
       socialName: socialName || null,
       filePath: req.file ? "/uploads/" + req.file.filename : null,
       composed: composed === "1" || composed === "true",

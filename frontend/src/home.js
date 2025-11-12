@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import "./home.css";
+import e from "cors";
 
 const socket = io("http://localhost:4005");
 
@@ -8,6 +9,7 @@ function Home() {
   const [systemOn, setSystemOn] = useState(true);
   const [enableImage, setEnableImage] = useState(true);
   const [enableText, setEnableText] = useState(true);
+  const [enableBirthday, setEnableBirthday] = useState(true);
   const [mode, setMode] = useState("image");
   const [minute, setMinute] = useState("");
   const [second, setSecond] = useState("");
@@ -18,6 +20,7 @@ function Home() {
       setSystemOn(config.systemOn);
       setEnableImage(config.enableImage);
       setEnableText(config.enableText);
+      setEnableBirthday(config.enableBirthday);
     });
     socket.emit("getConfig");
     return () => socket.off("configUpdate");
@@ -31,19 +34,23 @@ function Home() {
     if (!newStatus) {
       setEnableImage(false);
       setEnableText(false);
+      setEnableBirthday(false);
       socket.emit("adminUpdateConfig", {
         systemOn: newStatus,
         enableImage: false,
         enableText: false,
+        enableBirthday: false,
       });
     } else {
       // ถ้าเปิดระบบใหม่ ให้เปิดทุกฟังก์ชัน
       setEnableImage(true);
       setEnableText(true);
+      setEnableBirthday(true);
       socket.emit("adminUpdateConfig", {
         systemOn: newStatus,
         enableImage: true,
         enableText: true,
+        enableBirthday: true,
       });
     }
   };
@@ -67,6 +74,18 @@ function Home() {
       enableText: newStatus,
       systemOn,
       enableImage,
+    });
+  };
+
+  // เปิด/ปิดฟังก์ชันอวยพรวันเกิด
+  const handleToggleBirthday = () => {
+    const newStatus = !enableBirthday;
+    setEnableBirthday(newStatus);
+    socket.emit("adminUpdateConfig", {
+      enableBirthday: newStatus,
+      systemOn,
+      enableImage,
+      enableText,
     });
   };
 
@@ -135,7 +154,7 @@ function Home() {
 
         {/* ปุ่มเปิด/ปิดฟังก์ชันแต่ละอัน */}
         <div className="function-toggle-row">
-          <span>ฟังก์ชันส่งรูปภาพ:</span>
+          <span>ฟังก์ชันรูปภาพ:</span>
           <button
             className={`toggle-btn-minimal${enableImage ? " on" : " off"}`}
             onClick={handleToggleImage}
@@ -150,6 +169,14 @@ function Home() {
             disabled={!systemOn}
           >
             {enableText ? "เปิด" : "ปิด"}
+          </button>
+          <span>ฟังก์ชันอวยพรวันเกิด:</span>
+          <button
+            className={`toggle-btn-minimal${enableBirthday ? " on" : " off"}`}
+            onClick={handleToggleBirthday}
+            disabled={!systemOn}
+          >
+            {enableBirthday ? "เปิด" : "ปิด"}
           </button>
         </div>
 
@@ -169,6 +196,13 @@ function Home() {
               disabled={!systemOn}
             >
               ข้อความ
+            </button>
+            <button
+              className={`mode-btn-minimal${mode === "birthday" ? " active" : ""}`}
+              onClick={() => setMode("birthday")}
+              disabled={!systemOn}
+            >
+              วันเกิด
             </button>
           </div>
           <div className="input-row-minimal">
