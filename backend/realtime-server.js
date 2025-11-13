@@ -51,12 +51,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("getConfig", () => {
-    socket.emit("configUpdate", config);
+    socket.emit("status", config);
   });
 
   socket.on("adminUpdateConfig", (newConfig) => {
     config = { ...config, ...newConfig };
-    io.emit("configUpdate", config);
+    io.emit("status", config);
 
     // บันทึกลงไฟล์ทุกครั้งที่มีการเปลี่ยน
     fs.writeFileSync(settingsPath, JSON.stringify(config, null, 2));

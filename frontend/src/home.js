@@ -16,14 +16,14 @@ function Home() {
   const [price, setPrice] = useState("");
 
   useEffect(() => {
-    socket.on("configUpdate", (config) => {
+    socket.on("status", (config) => {
       setSystemOn(config.systemOn);
       setEnableImage(config.enableImage);
       setEnableText(config.enableText);
       setEnableBirthday(config.enableBirthday);
     });
     socket.emit("getConfig");
-    return () => socket.off("configUpdate");
+    return () => socket.off("status");
   }, []);
 
   // เมื่อกดปุ่มเปิด/ปิดระบบ
@@ -98,12 +98,15 @@ function Home() {
       alert("กรุณากรอกราคา");
       return;
     }
+    const totalMinutes = (parseInt(minute) || 0) * 60 + (parseInt(second) || 0);
+    const durationDisplay = `${minute ? minute + " นาที" : ""}${second ? (minute ? " " : "") + second + " วินาที" : ""}`;
     const packageData = {
       id: Date.now(),
       mode,
       date: new Date().toLocaleString(),
-      duration: `${minute ? minute + " นาที" : ""}${second ? (minute ? " " : "") + second + " วินาที" : ""}`,
-      price: price,
+      duration: durationDisplay, // สำหรับแสดงผล
+      time: totalMinutes, // สำหรับคำนวณเวลา (วินาที)
+      price: mode === "birthday" ? 0 : price,
     };
     socket.emit("addSetting", packageData);
     setMinute("");
