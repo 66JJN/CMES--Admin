@@ -63,6 +63,7 @@ function Home() {
       enableImage: newStatus,
       systemOn,
       enableText,
+      enableBirthday,
     });
   };
 
@@ -74,6 +75,7 @@ function Home() {
       enableText: newStatus,
       systemOn,
       enableImage,
+      enableBirthday,
     });
   };
 

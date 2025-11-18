@@ -8,11 +8,37 @@ function TimeHistory() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // ดึงประวัติจาก Realtime server
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch("http://localhost:4005/api/check-history");
+        if (response.ok) {
+          const data = await response.json();
+          console.log("[TimeHistory] Fetched history:", data);
+          setHistory(data);
+        }
+      } catch (error) {
+        console.error("[TimeHistory] Error fetching history:", error);
+      }
+    };
+
+    // ดึงครั้งแรก
+    fetchHistory();
+
+    // ตั้ง interval ให้ดึงทุก 5 วินาที เพื่อให้ข้อมูลเป็นปัจจุบัน
+    const interval = setInterval(fetchHistory, 5000);
+
+    // ตั้ง socket listener สำหรับอัพเดตแบบ real-time
     socketRef.current = io("http://localhost:4005");
     socketRef.current.on("status", (data) => {
-      if (data.settings) setHistory(data.settings);
+      console.log("[TimeHistory] Received status event, refetching...");
+      fetchHistory();
     });
-    return () => socketRef.current.disconnect();
+    
+    return () => {
+      clearInterval(interval);
+      socketRef.current.disconnect();
+    };
   }, []);
 
   const textHistory = history.filter((item) => item.mode === "text");

@@ -39,6 +39,12 @@ if (fs.existsSync(settingsPath)) {
 // REST API (optional สำหรับ fallback)
 app.get("/api/status", (req, res) => res.json(config));
 
+// API สำหรับดึง settings history
+app.get("/api/check-history", (req, res) => {
+  console.log("[Realtime] Returning settings history:", config.settings);
+  res.json(config.settings || []);
+});
+
 // WebSocket
 io.on("connection", (socket) => {
   // ส่งสถานะล่าสุดให้ client ที่เพิ่งเชื่อมต่อ

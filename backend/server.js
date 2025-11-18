@@ -133,6 +133,10 @@ app.post("/login", async (req, res) => {
 // API สำหรับรับข้อมูลจาก User backend
 app.post("/api/upload", upload.single("file"), (req, res) => {
   try {
+    console.log("[Admin] Upload request received");
+    console.log("[Admin] req.body:", req.body);
+    console.log("[Admin] req.file:", req.file);
+    
     const {
       type,
       text,
@@ -145,15 +149,23 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
       composed
     } = req.body;
 
+    // ตรวจสอบว่าได้รับไฟล์หรือไม่
+    if (!req.file) {
+      console.error("[Admin] No file received in upload");
+      return res.status(400).json({ success: false, error: "No file received" });
+    }
+
+    console.log("[Admin] Creating upload item with type:", type);
+
     const item = {
       id: Date.now().toString(),
-      type,
+      type: type || "image",
       text: text || "",
       time: Number(time) || 0,
       price: Number(price) || 0,
       sender: sender || "Unknown",
       textColor: textColor || "white",
-      socialType: socialenable || null,
+      socialType: socialType || null,  // แก้ไขจาก socialenable
       socialName: socialName || null,
       filePath: req.file ? "/uploads/" + req.file.filename : null,
       composed: composed === "1" || composed === "true",
@@ -163,10 +175,11 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
     };
 
     imageQueue.push(item);
+    console.log("[Admin] Upload item created and queued:", item.id, "type:", item.type);
     res.json({ success: true, uploadId: item.id });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ success: false });
+    console.error("[Admin] Error in upload:", e);
+    res.status(500).json({ success: false, error: e.message });
   }
 });
 
