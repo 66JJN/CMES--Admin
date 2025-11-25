@@ -263,7 +263,7 @@ function LuckyWheel() {
             value={tableRange.from}
             onChange={e => setTableRange({ ...tableRange, from: e.target.value })}
             disabled={spinning}
-            style={{flex: 1, padding: "8px", border: "2px solid #e0e0e0", borderRadius: "8px"}}
+            style={{flex: 1, padding: "1px", border: "2px solid #e0e0e0", borderRadius: "8px"}}
           />
           <input
             type="number"
@@ -271,9 +271,9 @@ function LuckyWheel() {
             value={tableRange.to}
             onChange={e => setTableRange({ ...tableRange, to: e.target.value })}
             disabled={spinning}
-            style={{flex: 1, padding: "8px", border: "2px solid #e0e0e0", borderRadius: "8px"}}
+            style={{flex: 1, padding: "1px", border: "2px solid #e0e0e0", borderRadius: "8px"}}
           />
-          <button onClick={handleAddTables} disabled={spinning || !tableRange.from || !tableRange.to} style={{background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 12px", cursor: "pointer", fontWeight: "600"}}>โต๊ะ</button>
+          <button onClick={handleAddTables} disabled={spinning || !tableRange.from || !tableRange.to} style={{background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 12px", cursor: "pointer", fontWeight: "600"}}>เพิ่มโต๊ะ</button>
         </div>
         <div className="wheel-edit-list small">
           {segments.map((seg, idx) => (
